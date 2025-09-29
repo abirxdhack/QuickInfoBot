@@ -4,7 +4,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils import LOGGER
 from bot import bot
-from config import COMMAND_PREFIX,ADMIN_ID
+from config import COMMAND_PREFIX, ADMIN_ID
 
 HELP_TEXT = (
     "**Here Are QuickInfo Bot Options 👇:**\n\n"
@@ -70,6 +70,25 @@ USERNAME_TEXT = (
     "> 🛠 Crafted with ❤️ By @itsSmartDev"
 )
 
+INLINE_TEXT = (
+    "**Inline Mode Tutorial 🔍**\n\n"
+    "🔎 Want to fetch info about a user or chat using inline mode? It’s super simple!\n\n"
+    "1️⃣ Type my username in any chat, followed by one of these:\n"
+    "   - Username: {bot_username} @username\n"
+    "   - User ID: {bot_username} userid\n"
+    "   - Chat ID: {bot_username} chatid\n"
+    "   - Telegram Link: {bot_username} t.me/username\n"
+    "   - Full URL: {bot_username} https://t.me/username\n"
+    "2️⃣ Select the result to get the ID, name, and more! ⚡\n"
+    "3️⃣ Supports 5 types of input for maximum flexibility! 😎\n\n"
+    "💡 **Pro Tip:** Use inline mode in any chat, even groups or channels! 🚀\n\n"
+    "> 🛠 Crafted with ❤️ By @itsSmartDev"
+)
+
+async def get_bot_username():
+    bot_user = await bot.get_me()
+    return f"@{bot_user.username}"
+
 MAIN_MENU_BUTTONS = InlineKeyboardMarkup(
     [
         [
@@ -82,13 +101,14 @@ MAIN_MENU_BUTTONS = InlineKeyboardMarkup(
         ],
         [
             InlineKeyboardButton("📚 Own Chats", callback_data="help_ownchats"),
-            InlineKeyboardButton("Close ❌", callback_data="help_close")
+            InlineKeyboardButton("🔍 Inline", callback_data="help_inline")
         ],
         [
             InlineKeyboardButton("👤 Username", callback_data="help_username"),
-            InlineKeyboardButton("🔧 Dev", user_id=ADMIN_ID)
+            InlineKeyboardButton("Close ❌", callback_data="help_close")
         ],
         [
+            InlineKeyboardButton("🔧 Dev", user_id=ADMIN_ID),
             InlineKeyboardButton("🔔 Join For Updates", url="https://t.me/itsSmartDev")
         ]
     ]
@@ -108,15 +128,16 @@ CALLBACK_TEXTS = {
     "help_sharedchat": SHAREDCHAT_TEXT,
     "help_admins": ADMINS_TEXT,
     "help_ownchats": OWNCHATS_TEXT,
-    "help_username": USERNAME_TEXT
+    "help_username": USERNAME_TEXT,
+    "help_inline": INLINE_TEXT
 }
 
 @bot.on_message(filters.command("help", prefixes=COMMAND_PREFIX.split("|")))
 async def help_command(bot: Client, message):
     LOGGER.info(f"Help command received for user {message.from_user.id}")
-    await message.reply_text(HELP_TEXT, reply_markup=MAIN_MENU_BUTTONS)
+    await message.reply_text(HELP_TEXT, reply_markup=MAIN_MENU_BUTTONS, disable_web_page_preview=True)
 
-@bot.on_callback_query(filters.regex(r"^(help_forward|help_getme|help_sharedchat|help_admins|help_ownchats|help_username|help_close|main_menu)$"))
+@bot.on_callback_query(filters.regex(r"^(help_forward|help_getme|help_sharedchat|help_admins|help_ownchats|help_username|help_inline|help_close|main_menu)$"))
 async def handle_help_callback(bot: Client, callback_query):
     callback_data = callback_query.data
     user_id = callback_query.from_user.id
@@ -129,9 +150,14 @@ async def handle_help_callback(bot: Client, callback_query):
             LOGGER.error(f"Failed to delete help message for user {user_id}: {e}")
             await callback_query.message.edit_text(
                 f"{HELP_TEXT}\n\n**Oops!** Couldn’t close the menu, but you can still pick an option! 😅",
-                reply_markup=MAIN_MENU_BUTTONS
+                reply_markup=MAIN_MENU_BUTTONS,
+                disable_web_page_preview=True
             )
     elif callback_data == "main_menu":
-        await callback_query.message.edit_text(HELP_TEXT, reply_markup=MAIN_MENU_BUTTONS)
+        await callback_query.message.edit_text(HELP_TEXT, reply_markup=MAIN_MENU_BUTTONS, disable_web_page_preview=True)
     else:
-        await callback_query.message.edit_text(CALLBACK_TEXTS[callback_data], reply_markup=BACK_BUTTON)
+        text = CALLBACK_TEXTS[callback_data]
+        if callback_data == "help_inline":
+            bot_username = await get_bot_username()
+            text = text.format(bot_username=bot_username)
+        await callback_query.message.edit_text(text, reply_markup=BACK_BUTTON, disable_web_page_preview=True)
