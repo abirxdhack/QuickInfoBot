@@ -1,5 +1,3 @@
-# Copyright (C) @TheSmartBisnu
-# Channel: https://t.me/itsSmartDev
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils import LOGGER
@@ -70,6 +68,16 @@ USERNAME_TEXT = (
     "> 🛠 Crafted with ❤️ By @itsSmartDev"
 )
 
+LINK_TEXT = (
+    "**Link Tutorial 🔗**\n\n"
+    "🔎 Want to get a direct link to a user, bot, group, or channel? It’s simple!\n\n"
+    "1️⃣ Type `/link` or `/link @username` in the chat with me.\n"
+    "2️⃣ I’ll show the profile info and a button to get the link! ⚡\n"
+    "3️⃣ Click 'Get Chat Link' to reveal Android, iOS, or join links! 😎\n\n"
+    "💡 **Pro Tip:** Works for any user, bot, or chat, even private ones! 🚀\n\n"
+    "> 🛠 Crafted with ❤️ By @itsSmartDev"
+)
+
 INLINE_TEXT = (
     "**Inline Mode Tutorial 🔍**\n\n"
     "🔎 Want to fetch info about a user or chat using inline mode? It’s super simple!\n\n"
@@ -105,10 +113,13 @@ MAIN_MENU_BUTTONS = InlineKeyboardMarkup(
         ],
         [
             InlineKeyboardButton("👤 Username", callback_data="help_username"),
-            InlineKeyboardButton("Close ❌", callback_data="help_close")
+            InlineKeyboardButton("🤖 Link", callback_data="help_link")
         ],
         [
-            InlineKeyboardButton("🔧 Dev", user_id=ADMIN_ID),
+            InlineKeyboardButton("Close ❌", callback_data="help_close"),
+            InlineKeyboardButton("🔧 Dev", user_id=ADMIN_ID)
+        ],
+        [
             InlineKeyboardButton("🔔 Join For Updates", url="https://t.me/itsSmartDev")
         ]
     ]
@@ -129,6 +140,7 @@ CALLBACK_TEXTS = {
     "help_admins": ADMINS_TEXT,
     "help_ownchats": OWNCHATS_TEXT,
     "help_username": USERNAME_TEXT,
+    "help_link": LINK_TEXT,
     "help_inline": INLINE_TEXT
 }
 
@@ -137,7 +149,7 @@ async def help_command(bot: Client, message):
     LOGGER.info(f"Help command received for user {message.from_user.id}")
     await message.reply_text(HELP_TEXT, reply_markup=MAIN_MENU_BUTTONS, disable_web_page_preview=True)
 
-@bot.on_callback_query(filters.regex(r"^(help_forward|help_getme|help_sharedchat|help_admins|help_ownchats|help_username|help_inline|help_close|main_menu)$"))
+@bot.on_callback_query(filters.regex(r"^(help_forward|help_getme|help_sharedchat|help_admins|help_ownchats|help_username|help_link|help_inline|help_close|main_menu)$"))
 async def handle_help_callback(bot: Client, callback_query):
     callback_data = callback_query.data
     user_id = callback_query.from_user.id
