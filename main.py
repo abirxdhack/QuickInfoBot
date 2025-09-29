@@ -1,5 +1,3 @@
-# Copyright (C) @TheSmartBisnu
-# Channel: https://t.me/itsSmartDev
 from bot import bot
 from utils import LOGGER
 from core.start import start
@@ -11,6 +9,7 @@ from modules.info import info_command
 from modules.donate import donate_command
 from modules.fwd import handle_forwarded_message
 from modules.username import username_command
+from modules.inline import inline_query_handler, chosen_inline_result
 from modules.callback import admin_button_handler, owner_button_handler
 from shared.chatinfo import handle_message
 
