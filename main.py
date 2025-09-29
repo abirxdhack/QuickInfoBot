@@ -1,3 +1,5 @@
+# Copyright (C) @TheSmartBisnu
+# Channel: https://t.me/itsSmartDev
 from bot import bot
 from utils import LOGGER
 from core.start import start
