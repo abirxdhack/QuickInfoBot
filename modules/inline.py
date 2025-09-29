@@ -1,3 +1,5 @@
+# Copyright (C) @TheSmartBisnu
+# Channel: https://t.me/itsSmartDev
 from pyrogram import Client, filters
 from pyrogram.types import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.enums import ChatType
