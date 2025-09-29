@@ -1,3 +1,5 @@
+# Copyright (C) @TheSmartBisnu
+# Channel: https://t.me/itsSmartDev
 from pyrogram import Client
 from pyrogram.types import InputMediaPhoto, InputMediaAnimation
 from pyrogram.enums import ChatType, UserStatus
