@@ -1,3 +1,5 @@
+# Copyright (C) @TheSmartBisnu
+# Channel: https://t.me/itsSmartDev
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils import LOGGER
