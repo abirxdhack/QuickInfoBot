@@ -7,15 +7,20 @@ from modules.info import format_user_response, format_chat_response, get_profile
 from utils import LOGGER
 from bot import bot
 
+async def get_bot_username():
+    bot_user = await bot.get_me()
+    return f"@{bot_user.username}"
+
 @bot.on_inline_query()
 async def inline_query_handler(client: Client, query):
     LOGGER.info(f"Inline query received from user {query.from_user.id}: {query.query}")
+    bot_username = await get_bot_username()
     if not query.query:
         results = [
             InlineQueryResultArticle(
                 id="placeholder",
                 title="Enter a username",
-                input_message_content=InputTextMessageContent("**Please enter a username after @mybotusername (e.g., @mybotusername @username)**"),
+                input_message_content=InputTextMessageContent(f"**Please enter a username after {bot_username} (e.g., {bot_username} @username)**"),
                 description="Type a username to get info",
                 reply_markup=InlineKeyboardMarkup(
                     [
@@ -85,13 +90,14 @@ async def inline_query_handler(client: Client, query):
 @bot.on_chosen_inline_result()
 async def chosen_inline_result(client: Client, chosen_result):
     LOGGER.info(f"Chosen inline result for result_id: {chosen_result.result_id} by user {chosen_result.from_user.id}")
+    bot_username = await get_bot_username()
     try:
         entity_id = int(chosen_result.result_id) if chosen_result.result_id not in ["error", "placeholder"] else None
         if not entity_id:
             if chosen_result.result_id == "placeholder":
                 await client.send_message(
                     chat_id=chosen_result.from_user.id,
-                    text="**Please enter a username after @mybotusername (e.g., @mybotusername @username)**",
+                    text=f"**Please enter a username after {bot_username} (e.g., {bot_username} @username)**",
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [InlineKeyboardButton(text="🔍 Search", switch_inline_query_current_chat="")],
